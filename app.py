@@ -7,8 +7,9 @@ from datetime import datetime
 from flask_cors import CORS
 
 # Load your ML model
-#MODEL_PATH = "XGB_Solar_Energy_Prediction_Model_SST"
-model = joblib.dump("solar_model.pkl", "model.pkl") 
+MODEL_PATH = "solar_model.pkl"
+model = joblib.load(MODEL_PATH)
+
 
 # API keys
 OPENCAGE_API_KEY = "1cc666bfb20c4e018d6f71c2a54f671a"
@@ -120,6 +121,7 @@ if __name__ == "__main__":
     debug_mode = not os.environ.get("PORT")
 
     app.run(host=host, port=port, debug=debug_mode)
+
 
 
 
