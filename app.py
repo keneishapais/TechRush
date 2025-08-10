@@ -12,7 +12,7 @@ model = joblib.load(MODEL_PATH)
 
 
 # API keys
-OPENCAGE_API_KEY = "1cc666bfb20c4e018d6f71c2a54f671a"
+OPENCAGE_API_KEY = "OPEN_CAGE_API_KEY"
 
 # Flask setup
 app = Flask(__name__)
@@ -121,6 +121,7 @@ if __name__ == "__main__":
     debug_mode = not os.environ.get("PORT")
 
     app.run(host=host, port=port, debug=debug_mode)
+
 
 
 
