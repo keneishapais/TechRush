@@ -1,45 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solar Energy Prediction</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Arial; margin: 20px; }
-        label { display: block; margin-top: 10px; }
-        button { margin-top: 15px; padding: 8px 12px; }
-        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+        /* Custom styles to ensure full page height and a clean font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
     </style>
 </head>
-<body>
-    <h1>Solar Energy Prediction</h1>
-    <label>Location: <input type="text" id="location"></label>
-    <label>Date: <input type="date" id="date"></label>
-    <button onclick="getPrediction()">Predict</button>
-    <h2>Result:</h2>
-    <pre id="result"></pre>
+<body class="flex items-center justify-center min-h-screen bg-gray-900 text-gray-100">
 
+    <!-- Main container with a background image. This image is a placeholder. -->
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://wallpapercave.com/wp/CdBbiZ7.jpg');"></div>
+
+    <!-- Overlay to make the content more readable -->
+    <div class="absolute inset-0 bg-black opacity-60"></div>
+
+    <!-- The main content card, centered and styled -->
+    <div class="relative bg-white bg-opacity-20 backdrop-blur-md rounded-2xl shadow-xl p-8 max-w-lg w-full m-4 border border-gray-700">
+        <h2 class="text-3xl font-bold text-center mb-6 text-yellow-300">Solar Energy Prediction</h2>
+        <form id="predictionForm" class="space-y-4">
+
+            <!-- Input fields with consistent styling -->
+            <div>
+                <label class="block mb-1 font-medium">Month: (1 for Jan, 2 for Feb...)</label>
+                <input type="number" step="1" id="month" required class="w-full px-4 py-2 bg-gray-800 bg-opacity-60 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-100">
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium">Temperature (°C):</label>
+                <input type="number" step="0.1" id="temperature" required class="w-full px-4 py-2 bg-gray-800 bg-opacity-60 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-100">
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium">Humidity (%):</label>
+                <input type="number" step="0.1" id="humidity" required class="w-full px-4 py-2 bg-gray-800 bg-opacity-60 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-100">
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium">Wind Speed (m/s):</label>
+                <input type="number" step="0.1" id="wind_speed" required class="w-full px-4 py-2 bg-gray-800 bg-opacity-60 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-100">
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium">Pressure (hPa):</label>
+                <input type="number" step="0.1" id="pressure" required class="w-full px-4 py-2 bg-gray-800 bg-opacity-60 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-100">
+            </div>
+
+            <div>
+                <label for="cloud_type" class="block mb-1 font-medium">Choose a cloud type:</label>
+                <select id="cloud_type" name="cloud_type" required class="w-full px-4 py-2 bg-gray-800 bg-opacity-60 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-100">
+                    <option value="0">0: No clouds (clear sky)</option>
+                    <option value="1">1: Cumulus (low-level, fluffy clouds)</option>
+                    <option value="2">2: Cumulonimbus (storm/thunderclouds)</option>
+                    <option value="3">3: Stratocumulus (low layered clouds)</option>
+                    <option value="4">4: Stratus (low, uniform cloud layer)</option>
+                    <option value="5">5: Altocumulus (mid-level fluffy clouds)</option>
+                    <option value="6">6: Altostratus (mid-level thick sheets)</option>
+                    <option value="7">7: Cirrus (high-level thin wispy clouds)</option>
+                    <option value="8">8: Deep convective clouds (very tall, dense)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium">Surface Albedo: (between 0 and 1)</label>
+                <input type="number" step="0.01" id="surface_albedo" required class="w-full px-4 py-2 bg-gray-800 bg-opacity-60 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-gray-100">
+            </div>
+            
+            <!-- Predict button with a gradient and hover effect -->
+            <button type="submit" class="w-full py-3 mt-6 rounded-lg font-semibold text-lg
+                bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600
+                text-gray-900 transition-all duration-200 ease-in-out shadow-lg">
+                Predict
+            </button>
+        </form>
+
+        <h3 id="output" class="text-center mt-6 text-xl font-semibold text-gray-100"></h3>
+    </div>
+
+    <!-- Your existing JavaScript code -->
     <script>
-        async function getPrediction() {
-            const location = document.getElementById("location").value;
-            const date = document.getElementById("date").value;
-            if (!location || !date) {
-                alert("Please enter location and date");
-                return;
-            }
+        document.getElementById("predictionForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const payload = {
+                month: document.getElementById("month").value,
+                temperature: document.getElementById("temperature").value,
+                humidity: document.getElementById("humidity").value,
+                wind_speed: document.getElementById("wind_speed").value,
+                pressure: document.getElementById("pressure").value,
+                cloud_type: document.getElementById("cloud_type").value,
+                surface_albedo: document.getElementById("surface_albedo").value
+            };
+
+            document.getElementById("output").innerText = "Predicting...";
 
             try {
-                const res = await fetch("http://localhost:5000/api/predict", {
+                const res = await fetch("/predict", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ location, date })
+                    body: JSON.stringify(payload)
                 });
 
-                const data = await res.json();
-                document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+                const result = await res.json();
+
+                if (result.error) {
+                    document.getElementById("output").innerText = "Error: " + result.error;
+                } else {
+                    document.getElementById("output").innerText = "Predicted Solar Energy: " + result.predicted_solar_energy.toFixed(2);
+                }
             } catch (err) {
-                document.getElementById("result").textContent = "Error: " + err;
+                document.getElementById("output").innerText = "Error: " + err.message;
             }
-        }
+        });
     </script>
 </body>
 </html>
