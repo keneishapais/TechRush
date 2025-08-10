@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Solar Energy Prediction</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        label { display: block; margin-top: 10px; }
+        button { margin-top: 15px; padding: 8px 12px; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Solar Energy Prediction</h1>
+    <label>Location: <input type="text" id="location"></label>
+    <label>Date: <input type="date" id="date"></label>
+    <button onclick="getPrediction()">Predict</button>
+    <h2>Result:</h2>
+    <pre id="result"></pre>
+
+    <script>
+        async function getPrediction() {
+            const location = document.getElementById("location").value;
+            const date = document.getElementById("date").value;
+            if (!location || !date) {
+                alert("Please enter location and date");
+                return;
+            }
+
+            try {
+                const res = await fetch("http://localhost:5000/api/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ location, date })
+                });
+
+                const data = await res.json();
+                document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                document.getElementById("result").textContent = "Error: " + err;
+            }
+        }
+    </script>
+</body>
+</html>
