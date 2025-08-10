@@ -1,7 +1,7 @@
 # TechRush
  Solar Energy Predictor
 
-A machine learning-based project to predict Global Horizontal Irradiance (GHI) and related weather parameters using input data such as temperature, humidity, wind speed, and more.  
+A machine learning-based project to predict Global Horizontal Irradiance (GHI) using related weather parameters as input data such as temperature, humidity, wind speed, and more.  
 
 
 
