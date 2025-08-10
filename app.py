@@ -28,7 +28,7 @@ def predict():
         surface_albedo = float(data["surface_albedo"])
         
         hour = 12  # hardcoded
-        #month= 1 #hardcoded
+        
 
         # Create feature array (adjust order according to your model's training)
         features = np.array([[month, temperature, humidity, wind_speed, pressure, cloud_type, surface_albedo, hour]])
@@ -54,3 +54,4 @@ if __name__ == "__main__":
     debug_mode = not os.environ.get("PORT")
 
     app.run(host=host, port=port, debug=debug_mode)
+
