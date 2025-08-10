@@ -112,7 +112,7 @@
                 if (result.error) {
                     document.getElementById("output").innerText = "Error: " + result.error;
                 } else {
-                    document.getElementById("output").innerText = "Predicted Solar Energy: " + result.predicted_solar_energy.toFixed(2);
+                    document.getElementById("output").innerText = "Predicted Solar Energy: " + result.predicted_solar_energy.toFixed(2)+" kW/m^2";
                 }
             } catch (err) {
                 document.getElementById("output").innerText = "Error: " + err.message;
@@ -121,3 +121,4 @@
     </script>
 </body>
 </html>
+
